@@ -2,7 +2,7 @@ import random
 import itertools
 import numpy as np
 
-s = 3
+s = 6
 divs = 3
 num_list = [k for k in range(1, s+1)]
 def Diff(li1, li2, li3): 
