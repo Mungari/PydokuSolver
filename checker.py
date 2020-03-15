@@ -3,14 +3,14 @@ import itertools
 import numpy as np
 
 s = 6
-divs = 3
+divs = 2
 num_list = [k for k in range(1, s+1)]
-def Diff(li1, li2, li3): 
+def Diff(li1, li2, li3, li4): 
     #li_dif = [i for i in li1 + li2 + li3 if i not in li1 or i not in li2 or i not in li3] 
-    return list((set(li1) - set(li2)) - set(li3)) 
+    return list((set(li1) - set(li2)) - set(li3) - set(li4)) 
 
 def get_square(x,y, grid):
-    return grid[x*divs:x*divs+divs, y*divs:y*divs+divs]
+    return grid[x*divs:x*divs+divs, y*divs:y*divs+divs].flatten()
 
 def get_row(x,grid):
     return list(grid[x])
@@ -22,28 +22,22 @@ def cellFiller(cella):
     for row in range(s):
         for col in range(s):
             tried = 0
-            potential_list = Diff(num_list, get_row(row, cella), get_col(col, cella))
+            potential_list = Diff(num_list, get_row(row, cella), get_col(col, cella), get_square(row//divs, col//divs, cella))
             while(True):
                 if(potential_list):
                     potential_num = random.choice(potential_list)
                     #print(potential_num)
-                    if(potential_num not in get_square(row//divs, col//divs, cella)):
-                        cella[row][col] = potential_num
-                        break
-                    else:
-                        tried += 1
-                        if(potential_list.__len__() == tried):
-                            print("unsolvable 1")
-                            tmp = np.ndarray((s,s), int)
-                            tmp.fill(0)
-                            cellFiller(tmp)
-                        else:
-                            continue
+                    cella[row][col] = potential_num
+                    break
                 else:
-                    tmp = np.ndarray((s,s), int)
-                    tmp.fill(0)
-                    cellFiller(tmp)
-                    print("unsolvable 2")
+                    tried += 1
+                    if(potential_list.__len__() == tried):
+                        print("unsolvable 1")
+                        tmp = np.ndarray((s,s), int)
+                        tmp.fill(0)
+                        cellFiller(tmp)
+                    else:
+                        continue
     return cella
 
 def sudokuGenerator(cella):
