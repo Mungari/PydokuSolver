@@ -2,7 +2,7 @@ import random
 import itertools
 import numpy as np
 
-s = 6
+s = 4
 divs = 2
 num_list = [k for k in range(1, s+1)]
 def Diff(li1, li2, li3, li4): 
@@ -13,10 +13,10 @@ def get_square(x,y, grid):
     return grid[x*divs:x*divs+divs, y*divs:y*divs+divs].flatten()
 
 def get_row(x,grid):
-    return list(grid[x])
+    return grid[x]
 
 def get_col(y,grid):
-    return list(grid[:, y])
+    return grid[:, y]
 
 def cellFiller(cella):
     for row in range(s):
@@ -31,13 +31,15 @@ def cellFiller(cella):
                     break
                 else:
                     tried += 1
-                    if(potential_list.__len__() == tried):
+                    if(potential_list.__len__() == tried or not potential_list):
+                        print(potential_list)
+                        print(potential_num)
+                        print(cella)
+                        print(row, col)
                         print("unsolvable 1")
                         tmp = np.ndarray((s,s), int)
                         tmp.fill(0)
                         cellFiller(tmp)
-                    else:
-                        continue
     return cella
 
 def sudokuGenerator(cella):
