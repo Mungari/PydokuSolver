@@ -2,8 +2,8 @@ import random
 import itertools
 import numpy as np
 
-s = 4
-divs = 2
+s = 9
+divs = 3
 num_list = [k for k in range(1, s+1)]
 def Diff(li1, li2, li3, li4): 
     #li_dif = [i for i in li1 + li2 + li3 if i not in li1 or i not in li2 or i not in li3] 
@@ -18,29 +18,27 @@ def get_row(x,grid):
 def get_col(y,grid):
     return grid[:, y]
 
-def cellFiller(cella):
-    for row in range(s):
-        for col in range(s):
-            tried = 0
-            potential_list = Diff(num_list, get_row(row, cella), get_col(col, cella), get_square(row//divs, col//divs, cella))
-            while(True):
-                if(potential_list):
-                    potential_num = random.choice(potential_list)
-                    #print(potential_num)
-                    cella[row][col] = potential_num
-                    break
+def cellFiller(cella, x, y):
+    potential_list = Diff(num_list, get_row(y, cella), get_col(x, cella), get_square(y//divs, x//divs, cella))
+    random.shuffle(potential_list)
+    for potential_num in potential_list:
+        if(0 in cella):
+            cella[y][x] = potential_num
+            if(x == s - 1 and y == s - 1):
+                return
+            else:
+                if(x == s - 1 and y < s - 1):
+                    cellFiller(cella, 0, y + 1) #If all goes well, and I'm out of spaces on the row, I increment to the next column
                 else:
-                    tried += 1
-                    if(potential_list.__len__() == tried or not potential_list):
-                        print(potential_list)
-                        print(potential_num)
-                        print(cella)
-                        print(row, col)
-                        print("unsolvable 1")
-                        tmp = np.ndarray((s,s), int)
-                        tmp.fill(0)
-                        cellFiller(tmp)
-    return cella
+                    if(x < s - 1 and y <= s - 1):
+                        cellFiller(cella, x + 1, y) #Same as above, but if I still have spaces to fill in the row
+        else:
+            return True
+    if(0 not in cella):
+        return True
+    else:
+        cella[y][x] = 0
+        return False
 
 def sudokuGenerator(cella):
     for row in cella:
@@ -51,13 +49,11 @@ def sudokuGenerator(cella):
     return cella
 
 
-'''def grouper(iterable, n, fillValue=None):
+def grouper(iterable, n, fillValue=None):
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fillValue)
-'''
+
 cell = np.ndarray((s,s), int)
 cell.fill(0)
-cellFiller(cell)
+cellFiller(cell, 0, 0)
 print(cell)
-#for block in grouper(cell,3):
-#   print(block)
