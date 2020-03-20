@@ -21,24 +21,31 @@ def get_col(y,grid):
 def cellFiller(cella, x, y):
     potential_list = Diff(num_list, get_row(y, cella), get_col(x, cella), get_square(y//divs, x//divs, cella))
     random.shuffle(potential_list)
-    for potential_num in potential_list:
-        if(0 in cella):
-            cella[y][x] = potential_num
-            if(x == s - 1 and y == s - 1):
-                return
-            else:
-                if(x == s - 1 and y < s - 1):
-                    cellFiller(cella, 0, y + 1) #If all goes well, and I'm out of spaces on the row, I increment to the next column
+    if(cella[y][x] == 0):
+        for potential_num in potential_list:
+            if(0 in cella):
+                cella[y][x] = potential_num
+                if(x == s - 1 and y == s - 1):
+                    return True
                 else:
-                    if(x < s - 1 and y <= s - 1):
-                        cellFiller(cella, x + 1, y) #Same as above, but if I still have spaces to fill in the row
-        else:
+                    if(x == s - 1 and y < s - 1):
+                        cellFiller(cella, 0, y + 1) #If all goes well, and I'm out of spaces on the row, I increment to the next column
+                    else:
+                        if(x < s - 1 and y <= s - 1):
+                            cellFiller(cella, x + 1, y) #Same as above, but if I still have spaces to fill in the row
+            else:
+                return True
+        if(0 not in cella):
             return True
-    if(0 not in cella):
-        return True
+        else:
+            cella[y][x] = 0
+            return False
     else:
-        cella[y][x] = 0
-        return False
+        if(x == s - 1 and y < s - 1):
+            cellFiller(cella, 0, y + 1) #If all goes well, and I'm out of spaces on the row, I increment to the next column
+        else:
+            if(x < s - 1 and y <= s - 1):
+                cellFiller(cella, x + 1, y)
 
 def sudokuGenerator(cella):
     for row in cella:
@@ -56,4 +63,10 @@ def grouper(iterable, n, fillValue=None):
 cell = np.ndarray((s,s), int)
 cell.fill(0)
 cellFiller(cell, 0, 0)
+print(cell)
+sudokuGenerator(cell)
+print(2*'\n')
+print(cell)
+cellFiller(cell, 0, 0)
+print(2*'\n')
 print(cell)
